@@ -28,7 +28,16 @@ gallery.addEventListener('click', e => {
         return;
     }
 
-    const instance = basicLightbox.create(`<img src="${e.target.dataset.source}" alt="${e.target.alt}" />`);
+    const imageUrl = e.target.dataset.source;
+    const imageAlt = e.target.alt;
+
+    const instance = basicLightbox.create(`
+        <div class="gallery__item">
+        <a class="gallery__link" href="${imageUrl}" data-source="${imageUrl}">
+          <img src="${imageUrl}" alt="${imageAlt}" />
+        </a>
+      </div>`
+    );
 
     instance.show();
 
