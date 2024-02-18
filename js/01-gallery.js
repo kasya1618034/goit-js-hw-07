@@ -1,49 +1,49 @@
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
-console.log(galleryItems);
 const gallery = document.querySelector('.gallery');
-galleryItems.forEach(item => {
-    const galleryItem = document.createElement('div');
-    galleryItem.classList.add('gallery__item');
 
-    const galleryLink = document.createElement('a');
-    galleryLink.classList.add('gallery__link');
-    galleryLink.href = item.original;
+const ArrangedGalleryItems = galleryItems.map((item) =>`
+    <div class="gallery__item">
+    <a class="gallery__link" href="${item.original}">
+      <img class="gallery__image" src="${item.preview}" alt="${item.description}" data-source="${item.original}" />
+    </a>
+  </div>
+`);
+    
+gallery.innerHTML = ArrangedGalleryItems.join('');
 
-    const galleryImage = document.createElement('img');
-    galleryImage.classList.add('gallery__image');
-    galleryImage.src = item.preview;
-    galleryImage.alt = item.description;
-    galleryImage.dataset.source = item.original;
-
-    galleryLink.appendChild(galleryImage);
-    galleryItem.appendChild(galleryLink);
-    gallery.appendChild(galleryItem);
-});
-
-document.querySelector('.gallery').addEventListener('click', e => {
-    const link = e.target.closest('.gallery__link');
-    if (!link) return;
-
-    e.preventDefault();
-
-    const sourceUrl = link.getAttribute('href');
-    const img = link.querySelector('.gallery__image');
-    const dataSource = img.dataset.source;
+gallery.addEventListener('click', event => {
+  event.preventDefault();
+  
+  if (event.target.classList.contains('gallery__image')) {
+    const sourceUrl = event.target.dataset.source;
+    const img = event.target;
 
     const instance = basicLightbox.create(`
-        <img src="${sourceUrl}" alt="${img.alt}" data-source="${dataSource}" />
+      <img src="${sourceUrl}" alt="${img.alt}" />
     `);
 
     instance.show();
 
-    function handleKeyDown(event) {
-        if (event.key === 'Escape') {
-            instance.close();
-            document.removeEventListener('keydown', handleKeyDown);
-        }
+    const escapeKeyDown = event => {
+      if (event.code === 'Escape') {
+        instance.close();
+      }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', escapeKeyDown);
+
+    instance.element().addEventListener('click', event => {
+      if (event.target.nodeName === 'IMG') {
+        instance.close();
+      }
+    });
+
+    instance.on('close', () => {
+      document.removeEventListener('keydown', escapeKeyDown);
+    });
+  }
 });
+
+console.log(galleryItems);
