@@ -22,22 +22,19 @@ galleryItems.forEach(item => {
     gallery.appendChild(galleryItem);
 });
 
-gallery.addEventListener('click', e => {
-    e.preventDefault();
-    if (!e.target.classList.contains('gallery__image')) {
-        return;
-    }
+document.querySelector('.gallery').addEventListener('click', e => {
+    const link = e.target.closest('.gallery__link');
+    if (!link) return;
 
-    const imageUrl = e.target.dataset.source;
-    const imageAlt = e.target.alt;
+    e.preventDefault();
+
+    const sourceUrl = link.getAttribute('href');
+    const img = link.querySelector('.gallery__image');
+    const dataSource = img.dataset.source;
 
     const instance = basicLightbox.create(`
-        <div class="gallery__item">
-        <a class="gallery__link" href="${imageUrl}" data-source="${imageUrl}">
-          <img src="${imageUrl}" alt="${imageAlt}" />
-        </a>
-      </div>`
-    );
+        <img src="${sourceUrl}" alt="${img.alt}" data-source="${dataSource}" />
+    `);
 
     instance.show();
 
@@ -46,8 +43,7 @@ gallery.addEventListener('click', e => {
             instance.close();
             document.removeEventListener('keydown', handleKeyDown);
         }
-    }
+    };
 
     document.addEventListener('keydown', handleKeyDown);
-});    
-    
+});
