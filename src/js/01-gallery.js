@@ -4,33 +4,32 @@ import { galleryItems } from './gallery-items.js';
 console.log(galleryItems);
 const gallery = document.querySelector('.gallery');
 galleryItems.forEach(item => {
-    const galleryItem = document.createElement('div');
-    galleryItem.classList.add('gallery-item');
-    const galleryLink = document.createElement('a');
-    galleryLink.classList.add('gallery-link');
-    galleryLink.href = item.src;
+  const galleryItem = document.createElement('div');
+  galleryItem.classList.add('gallery__item');
 
-    const galleryImage = document.createElement('img');
-    galleryImage.classList.add('gallery-image');
-    galleryImage.src = item.preview;
-    galleryImage.alt = item.description;
-    galleryImage.dataset.source = item.src;
+  const galleryLink = document.createElement('a');
+  galleryLink.classList.add('gallery__link');
+  galleryLink.href = item.original;
 
-    galleryLink.appendChild(galleryImage);
-    galleryItem.appendChild(galleryLink);
-    gallery.appendChild(galleryItem);
+  const galleryImage = document.createElement('img');
+  galleryImage.classList.add('gallery__image');
+  galleryImage.src = item.preview;
+  galleryImage.alt = item.description;
+  galleryImage.dataset.source = item.original;
+
+  galleryLink.appendChild(galleryImage);
+  galleryItem.appendChild(galleryLink);
+  gallery.appendChild(galleryItem);
 });
 
 gallery.addEventListener('click', e => {
     e.preventDefault();
-    if (e.target.classList.contains('gallery-image')) {
-        const imageUrl = e.target.dataset.source;
-        const imageAlt = e.target.alt;
-        const imgElement = document.createElement('img');
-        imgElement.src = imageUrl;
-        imgElement.alt = imageAlt;
-        const instance = basicLightbox.create(imgElement);
-
-        instance.show();
+    if (!e.target.classList.contains('gallery__image')) {
+        return;
     }
+
+  const instance = basicLightbox.create(`<img src="${e.target.dataset.source}" alt="${e.target.alt}" />`);
+
+  instance.show();
 });
+    
