@@ -4,22 +4,22 @@ import { galleryItems } from './gallery-items.js';
 console.log(galleryItems);
 const gallery = document.querySelector('.gallery');
 galleryItems.forEach(item => {
-  const galleryItem = document.createElement('div');
-  galleryItem.classList.add('gallery__item');
+    const galleryItem = document.createElement('div');
+    galleryItem.classList.add('gallery__item');
 
-  const galleryLink = document.createElement('a');
-  galleryLink.classList.add('gallery__link');
-  galleryLink.href = item.original;
+    const galleryLink = document.createElement('a');
+    galleryLink.classList.add('gallery__link');
+    galleryLink.href = item.original;
 
-  const galleryImage = document.createElement('img');
-  galleryImage.classList.add('gallery__image');
-  galleryImage.src = item.preview;
-  galleryImage.alt = item.description;
-  galleryImage.dataset.source = item.original;
+    const galleryImage = document.createElement('img');
+    galleryImage.classList.add('gallery__image');
+    galleryImage.src = item.preview;
+    galleryImage.alt = item.description;
+    galleryImage.dataset.source = item.original;
 
-  galleryLink.appendChild(galleryImage);
-  galleryItem.appendChild(galleryLink);
-  gallery.appendChild(galleryItem);
+    galleryLink.appendChild(galleryImage);
+    galleryItem.appendChild(galleryLink);
+    gallery.appendChild(galleryItem);
 });
 
 gallery.addEventListener('click', e => {
@@ -28,8 +28,17 @@ gallery.addEventListener('click', e => {
         return;
     }
 
-  const instance = basicLightbox.create(`<img src="${e.target.dataset.source}" alt="${e.target.alt}" />`);
+    const instance = basicLightbox.create(`<img src="${e.target.dataset.source}" alt="${e.target.alt}" />`);
 
-  instance.show();
-});
+    instance.show();
+
+    function handleKeyDown(event) {
+        if (event.key === 'Escape') {
+            instance.close();
+            document.removeEventListener('keydown', handleKeyDown);
+        }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+});    
     
